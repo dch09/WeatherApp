@@ -12,15 +12,15 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    var rootViewController: ViewController!
 
     /// I guess that's the correct way to add backwards compatibility to iOS 11?
     /// https://stackoverflow.com/questions/56916948/xcode-11-backward-compatibility-uiwindowscene-is-only-available-in-ios-13-or-n
     func applicationDidFinishLaunching(_ application: UIApplication) {
-        self.rootViewController = ViewController()
+        let homeViewController = HomeViewController()
+        let navigationController = UINavigationController(rootViewController: homeViewController)
         self.window = UIWindow()
         self.window?.bounds = UIScreen.main.bounds
-        self.window?.rootViewController = self.rootViewController
+        self.window?.rootViewController = navigationController
         self.window?.backgroundColor = .white
         self.window?.makeKeyAndVisible()
     }
