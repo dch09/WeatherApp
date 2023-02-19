@@ -8,6 +8,8 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    private let gradientLayer = CAGradientLayer()
+
     private var icon = UILabel()
     private var currentTemp = UILabel()
     private var maxTemp = UILabel()
@@ -36,6 +38,7 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         title = viewModel.city
         setupBackground()
+        animateBackground()
         setupViews()
         layoutViews()
     }
@@ -72,10 +75,32 @@ class DetailViewController: UIViewController {
         view.addSubview(sunsetInfo!)
     }
 
+    // MARK: - Gradient Background -
+
     private func setupBackground() {
         view.backgroundColor = .clear
         if let weatherType = viewModel.weatherType {
-            view.layer.addSublayer(CAGradientLayer.gradientLayer(for: weatherType, in: view.frame))
+            gradientLayer.frame = view.bounds
+            gradientLayer.colors = [weatherType.gradient.start,
+                                    weatherType.gradient.end]
+            view.layer.addSublayer(gradientLayer)
+        }
+    }
+
+    private func animateBackground() {
+        if let weatherType = viewModel.weatherType {
+            let animation = CABasicAnimation(keyPath: "colors")
+            animation.delegate = self
+
+            animation.toValue = [weatherType.gradient.end,
+                                 weatherType.gradient.start]
+
+            animation.duration = 5
+            animation.autoreverses = true
+            animation.fillMode = .forwards
+            animation.isRemovedOnCompletion = false
+
+            gradientLayer.add(animation, forKey: "colors")
         }
     }
 
@@ -101,5 +126,13 @@ class DetailViewController: UIViewController {
                            left: view.centerXAnchor,
                            right: currentTemp.rightAnchor,
                            paddingRight: -8)
+    }
+}
+
+extension DetailViewController: CAAnimationDelegate {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+        if flag {
+            animateBackground()
+        }
     }
 }
