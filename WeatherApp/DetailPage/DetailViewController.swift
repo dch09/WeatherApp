@@ -47,7 +47,7 @@ class DetailViewController: UIViewController {
 
     private func setupViews() {
         setupIcon()
-        setupTemperature()
+        setupTemperatures()
         setupSunScheduleInfo()
     }
 
@@ -59,12 +59,24 @@ class DetailViewController: UIViewController {
         view.addSubview(icon)
     }
 
-    private func setupTemperature() {
+    private func setupTemperatures() {
         currentTemp.font = .systemFont(ofSize: 48)
         currentTemp.textColor = .darkText
         currentTemp.textAlignment = .center
-        currentTemp.text = viewModel.currentTemp.localizedString
+        currentTemp.text = viewModel.currentTemp.degreeFormat
         view.addSubview(currentTemp)
+
+        minTemp.text = viewModel.lowestTemperatureLabel
+        minTemp.font = .systemFont(ofSize: 16)
+        minTemp.textColor = UIColor.black.withAlphaComponent(0.6)
+        minTemp.textAlignment = .right
+        view.addSubview(minTemp)
+
+        maxTemp.text = viewModel.highestTemperatureLabel
+        maxTemp.font = .systemFont(ofSize: 16)
+        maxTemp.textColor = UIColor.black.withAlphaComponent(0.6)
+        maxTemp.textAlignment = .left
+        view.addSubview(maxTemp)
     }
 
     private func setupSunScheduleInfo() {
@@ -116,16 +128,27 @@ class DetailViewController: UIViewController {
                            right: icon.rightAnchor,
                            paddingTop: 8)
 
-        sunriseInfo?.anchor(top: currentTemp.bottomAnchor,
-                            left: currentTemp.leftAnchor,
+        minTemp.anchor(top: currentTemp.bottomAnchor,
+                       left: view.safeAreaLayoutGuide.leftAnchor,
+                       right: view.centerXAnchor,
+                       paddingTop: 8,
+                       paddingRight: -16)
+
+        maxTemp.anchor(top: minTemp.topAnchor,
+                       left: view.centerXAnchor,
+                       right: view.safeAreaLayoutGuide.rightAnchor,
+                       paddingLeft: 16)
+
+        sunriseInfo?.anchor(top: maxTemp.bottomAnchor,
+                            left: view.safeAreaLayoutGuide.leftAnchor,
                             right: view.centerXAnchor,
                             paddingTop: 16,
-                            paddingLeft: 8,
-                            paddingRight: -8)
+                            paddingLeft: 16,
+                            paddingRight: -16)
         sunsetInfo?.anchor(top: sunriseInfo?.topAnchor,
                            left: view.centerXAnchor,
-                           right: currentTemp.rightAnchor,
-                           paddingRight: -8)
+                           right: view.safeAreaLayoutGuide.rightAnchor,
+                           paddingRight: -16)
     }
 }
 

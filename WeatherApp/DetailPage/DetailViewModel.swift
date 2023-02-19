@@ -30,8 +30,17 @@ class DetailViewModel {
     let city: String
 
     let currentTemp: Temperature
-    let highestTemp: Temperature
-    let lowestTemp: Temperature
+    
+    private let lowestTemp: Temperature
+    var lowestTemperatureLabel: String {
+        "Min: \(lowestTemp.degreeFormat)"
+    }
+    
+    private let highestTemp: Temperature
+    var highestTemperatureLabel: String {
+        "Max: \(highestTemp.degreeFormat)"
+    }
+
     let feelsLike: Temperature
     let weatherType: WeatherType?
 
