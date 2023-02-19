@@ -12,13 +12,6 @@ enum Metrics {
     case fahrenheit
 }
 
-enum WeatherType {
-    case cloudy
-    case sunny
-    case rainy
-    case storm
-}
-
 struct HourForecast {
     let hour: Int
     let degrees: Int
@@ -36,25 +29,37 @@ struct DayForecast {
 class DetailViewModel {
     let city: String
 
-    let currentTemp: Double
-    let highestTemp: Double
-    let lowestTemp: Double
-    let feelsLike: Double
-    let weatherType: WeatherType
+    let currentTemp: Temperature
+    let highestTemp: Temperature
+    let lowestTemp: Temperature
+    let feelsLike: Temperature
+    let weatherType: WeatherType?
 
-    // var sunset: Date
-    // var sunrise: Date
+    var sunset: Date
+    var sunrise: Date
+
     let hourlyForecast: [HourForecast]
     let tenDaysForecast: [DayForecast]
 
-    init(from response: WeatherDataResponse) {
-        self.city = response.name
+    init(from response: WeatherDataResponse, city: String) {
+        self.city = city
+
         self.currentTemp = response.main.temp
         self.lowestTemp = response.main.tempMin
         self.highestTemp = response.main.tempMax
         self.feelsLike = response.main.feelsLike
-        self.weatherType = .cloudy
+        self.weatherType = WeatherType(code: response.weather.first?.id ?? 0)
+
+        self.sunset = response.sys.sunset.date
+        self.sunrise = response.sys.sunrise.date
+
         self.hourlyForecast = []
         self.tenDaysForecast = []
+    }
+}
+
+private extension Int {
+    var date: Date {
+        Date(timeIntervalSince1970: TimeInterval(self))
     }
 }

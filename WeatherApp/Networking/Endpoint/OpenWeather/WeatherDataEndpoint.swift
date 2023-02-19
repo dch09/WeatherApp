@@ -12,8 +12,16 @@ struct WeatherDataEndpoint {
     static let url = "https://api.openweathermap.org/data/2.5/weather"
 
     static func parameters(coordinates: NetworkingClient.Coordinates) -> Parameters {
-        ["lat": coordinates.latitude,
-         "lon": coordinates.longitude,
-         "appid": NetworkingClient.openWeatherKey]
+        let isUsingMetricUnits: Bool
+        if #available(iOS 16, *) {
+            isUsingMetricUnits = Locale.current.measurementSystem == .metric
+        } else {
+            isUsingMetricUnits = Locale.current.usesMetricSystem
+        }
+
+        return ["lat": coordinates.latitude,
+                "lon": coordinates.longitude,
+                "appid": NetworkingClient.openWeatherKey,
+                "units": isUsingMetricUnits ? "metric" : "imperial"]
     }
 }

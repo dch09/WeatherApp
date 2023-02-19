@@ -73,7 +73,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 NetworkingClient.shared.fetchWeather(for: coordinates) { [weak self] result in
                     switch result {
                     case .success(let value):
-                        let viewModel = DetailViewModel(from: value)
+                        let viewModel = DetailViewModel(from: value, city: city)
                         let detailVC = DetailViewController(viewModel: viewModel)
                         self?.navigationController?.pushViewController(detailVC, animated: true)
                     case .failure(let error):

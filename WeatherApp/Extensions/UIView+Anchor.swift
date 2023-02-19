@@ -39,4 +39,16 @@ extension UIView {
             heightAnchor.constraint(equalToConstant: height).isActive = true
         }
     }
+
+    func anchor(to parentView: UIView, insets: UIEdgeInsets = .zero) {
+        guard parentView == self.superview else { return }
+
+        translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            topAnchor.constraint(equalTo: parentView.topAnchor, constant: insets.top),
+            leftAnchor.constraint(equalTo: parentView.leftAnchor, constant: insets.left),
+            bottomAnchor.constraint(equalTo: parentView.bottomAnchor, constant: -insets.bottom),
+            rightAnchor.constraint(equalTo: parentView.rightAnchor, constant: -insets.right)
+        ])
+    }
 }
