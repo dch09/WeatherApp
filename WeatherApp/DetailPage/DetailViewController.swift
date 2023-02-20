@@ -48,16 +48,23 @@ class DetailViewController: UIViewController {
     // MARK: - Setup -
 
     private func setupBookmarkButton() {
+        // TODO: - fix constraints issues
         let isBookmarked = Storage.shared.isBookmarked(viewModel.city)
         let iconName = isBookmarked ? "bookmarkIconFill" : "bookmarkIcon"
         let icon = UIImage(named: iconName)
-        navigationItem.rightBarButtonItem = .init(image: icon,
-                                                  style: .plain,
-                                                  target: self,
-                                                  action: #selector(toggleCityBookmark))
+        let button = UIButton()
+        button.setImage(icon, for: .normal)
+        button.addTarget(self,
+                         action: #selector(toggleCityBookmark),
+                         for: .touchUpInside)
+        button.anchor(width: 24, height: 24)
+        button.imageView?.contentMode = .scaleAspectFit
+
+        let barButton = UIBarButtonItem(customView: button)
+        navigationItem.rightBarButtonItem = barButton
     }
 
-    @objc func toggleCityBookmark() {
+    @objc func toggleCityBookmark(_ sender: UIBarButtonItem) {
         Storage.shared.toggleBookmark(for: viewModel.city)
 
         DispatchQueue.main.async { [weak self] in
