@@ -37,6 +37,8 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = viewModel.city
+        navigationController?.navigationBar.tintColor = .black
+        setupBookmarkButton()
         setupBackground()
         animateBackground()
         setupViews()
@@ -44,6 +46,24 @@ class DetailViewController: UIViewController {
     }
 
     // MARK: - Setup -
+
+    private func setupBookmarkButton() {
+        let isBookmarked = Storage.shared.isBookmarked(viewModel.city)
+        let iconName = isBookmarked ? "bookmarkIconFill" : "bookmarkIcon"
+        let icon = UIImage(named: iconName)
+        navigationItem.rightBarButtonItem = .init(image: icon,
+                                                  style: .plain,
+                                                  target: self,
+                                                  action: #selector(toggleCityBookmark))
+    }
+
+    @objc func toggleCityBookmark() {
+        Storage.shared.toggleBookmark(for: viewModel.city)
+
+        DispatchQueue.main.async { [weak self] in
+            self?.setupBookmarkButton()
+        }
+    }
 
     private func setupViews() {
         setupIcon()

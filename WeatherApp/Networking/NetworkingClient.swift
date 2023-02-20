@@ -33,7 +33,7 @@ class NetworkingClient {
     }
 
     func fetchWeather(for coordinates: Coordinates,
-                      completion: @escaping (Result<WeatherDataResponse, AFError>) -> Void) {
+                      completion: @escaping (Result<CurrentWeatherResponse, AFError>) -> Void) {
         AF.request(WeatherDataEndpoint.url,
                    parameters: WeatherDataEndpoint.parameters(coordinates: coordinates))
             .validate()

@@ -1,5 +1,5 @@
 //
-//  WeatherDataResponse.swift
+//  CurrentWeatherResponse.swift
 //  WeatherApp
 //
 //  Created by Daniel Choroszucha on 19/02/2023.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-// MARK: - WeatherDataResponse
+// MARK: - CurrentWeatherResponse
 
-struct WeatherDataResponse: Codable {
+struct CurrentWeatherResponse: Codable {
     let coord: Coord
     let weather: [Weather]
     let base: String

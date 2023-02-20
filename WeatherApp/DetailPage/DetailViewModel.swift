@@ -30,12 +30,12 @@ class DetailViewModel {
     let city: String
 
     let currentTemp: Temperature
-    
+
     private let lowestTemp: Temperature
     var lowestTemperatureLabel: String {
         "Min: \(lowestTemp.degreeFormat)"
     }
-    
+
     private let highestTemp: Temperature
     var highestTemperatureLabel: String {
         "Max: \(highestTemp.degreeFormat)"
@@ -50,7 +50,7 @@ class DetailViewModel {
     let hourlyForecast: [HourForecast]
     let tenDaysForecast: [DayForecast]
 
-    init(from response: WeatherDataResponse, city: String) {
+    init(from response: CurrentWeatherResponse, city: String) {
         self.city = city
 
         self.currentTemp = response.main.temp
