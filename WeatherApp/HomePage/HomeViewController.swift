@@ -9,7 +9,7 @@ import UIKit
 
 class HomeViewController: UIViewController {
     private var viewModel = HomeViewModel()
-    private var textField = UITextField()
+    private var searchField = TextFieldContainer()
     private var resultList = UITableView()
 
     override func viewDidLoad() {
@@ -19,33 +19,30 @@ class HomeViewController: UIViewController {
         title = "WeatherApp"
         navigationController?.navigationBar.prefersLargeTitles = true
 
-        textField.delegate = self
+        viewModel.presenter = self
         resultList.delegate = self
         resultList.dataSource = self
         resultList.register(UITableViewCell.self, forCellReuseIdentifier: "SearchResult")
+
+        searchField.textField.addTarget(viewModel,
+                                        action: #selector(viewModel.textFieldDidChange),
+                                        for: .editingChanged)
     }
 
     private func setupViews() {
-        view.addSubview(textField)
-        textField.borderStyle = .roundedRect
-        textField.placeholder = "Search"
-        let icon = UIImage(named: "searchSymbol")
-        let iconView = UIImageView(image: icon)
-        iconView.contentMode = .scaleAspectFit
-        iconView.anchor(width: 32, height: 16)
-        textField.leftView = iconView
-        textField.leftViewMode = .always
+        view.addSubview(searchField)
+        searchField.setLabelColor(to: .red)
         view.addSubview(resultList)
     }
 
     private func layoutViews() {
-        textField.anchor(top: view.safeAreaLayoutGuide.topAnchor,
-                         left: view.safeAreaLayoutGuide.leftAnchor,
-                         right: view.safeAreaLayoutGuide.rightAnchor,
-                         paddingTop: 8,
-                         paddingLeft: 16,
-                         paddingRight: -16)
-        resultList.anchor(top: textField.bottomAnchor,
+        searchField.anchor(top: view.safeAreaLayoutGuide.topAnchor,
+                           left: view.safeAreaLayoutGuide.leftAnchor,
+                           right: view.safeAreaLayoutGuide.rightAnchor,
+                           paddingTop: 8,
+                           paddingLeft: 16,
+                           paddingRight: -16)
+        resultList.anchor(top: searchField.bottomAnchor,
                           left: view.safeAreaLayoutGuide.leftAnchor,
                           bottom: view.safeAreaLayoutGuide.bottomAnchor,
                           right: view.safeAreaLayoutGuide.rightAnchor,
@@ -115,16 +112,12 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension HomeViewController: UITextFieldDelegate {
-    func textField(_ textField: UITextField,
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-        guard let query = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
-            viewModel.clearSuggestions()
-            return true
-        }
-        viewModel.search(for: query)
-        resultList.reloadData()
-        return true
+extension HomeViewController: HomeViewPresentation {
+    func showValidationMessage(_ message: String) {
+        searchField.showMessage(message)
+    }
+
+    func hideValidationMessage() {
+        searchField.hideMessage()
     }
 }
