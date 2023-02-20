@@ -53,6 +53,8 @@ class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - HomeViewController + UITableViewDelegate & DataSource -
+
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let city = viewModel.searchResults[indexPath.row].localizedName
@@ -111,6 +113,8 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 }
+
+// MARK: - HomeViewController + HomeViewPresentation -
 
 extension HomeViewController: HomeViewPresentation {
     func showValidationMessage(_ message: String) {
