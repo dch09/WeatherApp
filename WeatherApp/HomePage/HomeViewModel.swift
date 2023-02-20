@@ -22,14 +22,12 @@ class HomeViewModel {
     /// observe textField changes with debounced execution
     @objc func textFieldDidChange(_ textField: UITextField) {
         guard let query = textField.text else { return }
-
-        debounceTimer?.invalidate()
-
         if query.isEmpty {
             presenter?.hideValidationMessage()
             return
         }
 
+        debounceTimer?.invalidate()
         debounceTimer = Timer.scheduledTimer(withTimeInterval: debounceDelay, repeats: false) { [weak self] _ in
             guard let self else { return }
 
