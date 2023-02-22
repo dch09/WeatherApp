@@ -27,6 +27,17 @@ class HomeViewController: UIViewController {
         searchField.textField.addTarget(viewModel,
                                         action: #selector(viewModel.textFieldDidChange),
                                         for: .editingChanged)
+        if #available(iOS 15.0, *) {
+            resultList.sectionHeaderTopPadding = 0
+        }
+
+        print(Storage.shared.bookmarks.count)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.filterOutBookmarks()
+        resultList.reloadData()
     }
 
     private func setupViews() {
@@ -57,71 +68,136 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let city = viewModel.searchResults[indexPath.row].localizedName
+        let bookmarksAvailable = !Storage.shared.isEmpty
+        let resultsAvailable = !viewModel.searchResults.isEmpty
+        let city: String?
 
-        NetworkingClient.shared.getCoordinates(for: city) { [weak self] result in
-            switch result {
-            case .success(let value):
-                guard let first = value.first,
-                      let latitude = first.lat,
-                      let longitude = first.lon
-                else { return }
-                let coordinates = NetworkingClient.Coordinates(latitude: latitude,
-                                                               longitude: longitude)
-
-                NetworkingClient.shared.fetchWeather(for: coordinates) { [weak self] result in
-                    switch result {
-                    case .success(let value):
-                        let viewModel = DetailViewModel(from: value, city: city)
-                        let detailVC = DetailViewController(viewModel: viewModel)
-                        self?.navigationController?.pushViewController(detailVC, animated: true)
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
-
-            case .failure(let error):
-                print("Show error")
+        switch (bookmarksAvailable, resultsAvailable) {
+        case (true, true):
+            switch indexPath.section {
+            case 0:
+                city = Storage.shared.bookmarks[safe: indexPath.row]
+            case 1:
+                city = viewModel.searchResults[safe: indexPath.row]?.localizedName
+            default:
+                city = nil
             }
+        case (true, false):
+            city = Storage.shared.bookmarks[safe: indexPath.row]
+        case (false, true):
+            city = viewModel.searchResults[safe: indexPath.row]?.localizedName
+        case (false, false):
+            city = nil
         }
+
+        guard let city else { return }
+
+        viewModel.openWeatherDetails(for: city)
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let bookmarksAvailable = !Storage.shared.isEmpty
+        let resultsAvailable = !viewModel.searchResults.isEmpty
+
+        if section == 0, bookmarksAvailable {
+            return "Bookmarks"
+        } else if section == 1, resultsAvailable {
+            return "Search Results"
+        }
+        return nil
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        // TODO: - favorites
-        return 1
+        let bookmarksAvailable = !Storage.shared.isEmpty
+        let resultsAvailable = !viewModel.searchResults.isEmpty
+
+        switch (bookmarksAvailable, resultsAvailable) {
+        case (false, true), (true, false):
+            return 1
+        case (true, true):
+            return 2
+        default:
+            return 0
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.searchResults.count
+        switch section {
+        case 0:
+            return Storage.shared.bookmarks.count
+        case 1:
+            return viewModel.searchResults.count
+        default:
+            return 0
+        }
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResult", for: indexPath)
-        let searchResult = viewModel.searchResults[indexPath.row]
+    private func configureCell(with model: CityModel, cell: UITableViewCell) -> UITableViewCell {
         cell.accessoryType = .disclosureIndicator
 
         if #available(iOS 14.0, *) {
             var content = cell.defaultContentConfiguration()
-            content.text = searchResult.localizedName
-            content.secondaryText = searchResult.country?.localizedName
+            content.text = model.name
+            content.secondaryText = model.country
+            if model.isBookmarked {
+                let image = UIImage(named: "bookmarkIconFill")
+                let resizedImage = image?.resized(to: CGSize(width: 24, height: 24))
+                content.image = resizedImage
+            }
             cell.contentConfiguration = content
         } else {
-            cell.textLabel?.text = searchResult.localizedName
-            cell.detailTextLabel?.text = searchResult.country?.localizedName
+            cell.textLabel?.text = model.name
+            cell.detailTextLabel?.text = model.country
         }
-        // content.image = book.authType == .single ? UIImage(systemName: "person.fill") : UIImage(systemName: "person.2.fill")
+
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResult", for: indexPath)
+
+        switch indexPath.section {
+        case 0:
+            guard let city = Storage.shared.bookmarks[safe: indexPath.row] else { return cell }
+            let model = CityModel(name: city, country: nil, isBookmarked: true)
+            return configureCell(with: model, cell: cell)
+        case 1:
+            guard let city = viewModel.searchResults[safe: indexPath.row] else { return cell }
+            let model = CityModel(name: city.localizedName, country: city.country?.localizedName)
+            return configureCell(with: model, cell: cell)
+        default:
+            return cell
+        }
     }
 }
 
 // MARK: - HomeViewController + HomeViewPresentation -
 
 extension HomeViewController: HomeViewPresentation {
+    func openDetailsFor(city: String, with data: CurrentWeatherResponse) {
+        let viewModel = DetailViewModel(from: data, city: city)
+        let detailVC = DetailViewController(viewModel: viewModel)
+
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationController?.pushViewController(detailVC, animated: true)
+        }
+    }
+
     func showValidationMessage(_ message: String) {
-        searchField.showMessage(message)
+        DispatchQueue.main.async { [weak self] in
+            self?.searchField.showMessage(message)
+        }
     }
 
     func hideValidationMessage() {
-        searchField.hideMessage()
+        DispatchQueue.main.async { [weak self] in
+            self?.searchField.hideMessage()
+        }
+    }
+
+    func reloadData() {
+        DispatchQueue.main.async { [weak self] in
+            self?.resultList.reloadData()
+        }
     }
 }

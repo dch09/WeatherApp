@@ -7,6 +7,12 @@
 
 import Foundation
 
+struct CityModel {
+    let name: String
+    let country: String?
+    var isBookmarked = false
+}
+
 struct Storage {
     private let bookmarksKey = "bookmarkedCities"
     private let defaults = UserDefaults.standard
@@ -24,8 +30,16 @@ struct Storage {
     }
 
     func isBookmarked(_ city: String) -> Bool {
-        let bookmarks = getBookmarks()
-        return bookmarks.contains(city)
+        bookmarks.contains(city)
+    }
+
+    var isEmpty: Bool {
+        getBookmarks().isEmpty
+    }
+
+
+    var bookmarks: [String] {
+        getBookmarks()
     }
 
     // MARK: - Private -
