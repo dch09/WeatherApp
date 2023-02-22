@@ -16,8 +16,16 @@ class DetailViewController: UIViewController {
     private var minTemp = UILabel()
     private var feelsLike = UILabel()
 
-    private var sunsetInfo: SunScheduleView?
-    private var sunriseInfo: SunScheduleView?
+    private var sunsetTile = RoundedTileView()
+    private var sunriseTile = RoundedTileView()
+
+    private var visibilityTile = RoundedTileView()
+    private var cloudsTile = RoundedTileView()
+    private var windTile = RoundedTileView()
+    private var pressureTile = RoundedTileView()
+    private var humidityTile = RoundedTileView()
+
+    // TODO: - add country label
 
     private var viewModel: DetailViewModel!
 
@@ -75,7 +83,13 @@ class DetailViewController: UIViewController {
     private func setupViews() {
         setupIcon()
         setupTemperatures()
-        setupSunScheduleInfo()
+        setupSunriseTile()
+        setupSunsetTile()
+        setupVisibilityTile()
+        setupCloudsTile()
+        setupWindTile()
+        setupPressureTile()
+        setupHumidityTile()
     }
 
     private func setupIcon() {
@@ -106,13 +120,67 @@ class DetailViewController: UIViewController {
         view.addSubview(maxTemp)
     }
 
-    private func setupSunScheduleInfo() {
-        sunriseInfo = SunScheduleView(for: .sunrise(viewModel.sunrise))
-        sunsetInfo = SunScheduleView(for: .sunset(viewModel.sunset))
-        guard sunriseInfo != nil, sunsetInfo != nil else { return }
-        view.addSubview(sunriseInfo!)
-        view.addSubview(sunsetInfo!)
+    private func setupSunriseTile() {
+        let icon = UIImage(named: "sunsetIcon") ?? .init()
+        sunriseTile.update(with: .init(icon: icon,
+                                       title: "Sunrise",
+                                       detail: viewModel.sunrise.shortFormat))
+        view.addSubview(sunriseTile)
     }
+
+    private func setupSunsetTile() {
+        let icon = UIImage(named: "sunriseIcon") ?? .init()
+        sunsetTile.update(with: .init(icon: icon,
+                                      title: "Sunset",
+                                      detail: viewModel.sunset.shortFormat))
+        view.addSubview(sunsetTile)
+    }
+
+    func setupVisibilityTile() {
+        let icon = UIImage()
+        visibilityTile.update(with: .init(icon: icon,
+                                          title: "Visibility",
+                                          detail: "\(viewModel.visibility)"))
+        view.addSubview(visibilityTile)
+    }
+
+    func setupCloudsTile() {
+        let icon = UIImage()
+        cloudsTile.update(with: .init(icon: icon,
+                                      title: "Clouds",
+                                      detail: "\(viewModel.clouds)"))
+        view.addSubview(cloudsTile)
+    }
+
+    func setupWindTile() {
+        let icon = UIImage()
+        windTile.update(with: .init(icon: icon,
+                                    title: "Wind Speed",
+                                    detail: "\(viewModel.windSpeed)"))
+        view.addSubview(windTile)
+    }
+
+    func setupPressureTile() {
+        let icon = UIImage()
+        pressureTile.update(with: .init(icon: icon,
+                                        title: "Pressure",
+                                        detail: "\(viewModel.pressure)"))
+        view.addSubview(pressureTile)
+    }
+
+    func setupHumidityTile() {
+        let icon = UIImage()
+        humidityTile.update(with: .init(icon: icon,
+                                        title: "Humidity",
+                                        detail: "\(viewModel.pressure)"))
+        view.addSubview(humidityTile)
+    }
+
+    // private var visibilityTile = RoundedTileView()
+    // private var cloudsTile = RoundedTileView()
+    // private var windTile = RoundedTileView()
+    // private var pressureTile = RoundedTileView()
+    // private var humidityTile = RoundedTileView()
 
     // MARK: - Gradient Background -
 
@@ -166,16 +234,41 @@ class DetailViewController: UIViewController {
                        right: view.safeAreaLayoutGuide.rightAnchor,
                        paddingLeft: 16)
 
-        sunriseInfo?.anchor(top: maxTemp.bottomAnchor,
-                            left: view.safeAreaLayoutGuide.leftAnchor,
-                            right: view.centerXAnchor,
-                            paddingTop: 16,
-                            paddingLeft: 16,
-                            paddingRight: -16)
-        sunsetInfo?.anchor(top: sunriseInfo?.topAnchor,
-                           left: view.centerXAnchor,
-                           right: view.safeAreaLayoutGuide.rightAnchor,
+        sunriseTile.anchor(top: maxTemp.bottomAnchor,
+                           left: view.safeAreaLayoutGuide.leftAnchor,
+                           right: view.centerXAnchor,
+                           paddingTop: 16,
+                           paddingLeft: 16,
                            paddingRight: -16)
+        sunsetTile.anchor(top: sunriseTile.topAnchor,
+                          left: view.centerXAnchor,
+                          right: view.safeAreaLayoutGuide.rightAnchor,
+                          paddingRight: -16)
+
+        visibilityTile.anchor(top: sunsetTile.bottomAnchor,
+                              left: sunriseTile.leftAnchor,
+                              right: sunriseTile.rightAnchor,
+                              paddingTop: 16)
+
+        cloudsTile.anchor(top: sunsetTile.bottomAnchor,
+                          left: sunsetTile.leftAnchor,
+                          right: sunsetTile.rightAnchor,
+                          paddingTop: 16)
+
+        windTile.anchor(top: visibilityTile.bottomAnchor,
+                        left: visibilityTile.leftAnchor,
+                        right: visibilityTile.rightAnchor,
+                        paddingTop: 16)
+
+        pressureTile.anchor(top: cloudsTile.bottomAnchor,
+                            left: cloudsTile.leftAnchor,
+                            right: cloudsTile.rightAnchor,
+                            paddingTop: 16)
+
+        humidityTile.anchor(top: windTile.bottomAnchor,
+                            left: windTile.leftAnchor,
+                            right: windTile.rightAnchor,
+                            paddingTop: 16)
     }
 }
 

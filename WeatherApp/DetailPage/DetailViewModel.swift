@@ -47,6 +47,15 @@ class DetailViewModel {
     var sunset: Date
     var sunrise: Date
 
+    var visibility: Int
+    var humidity: Int
+    var pressure: Int
+
+    var windSpeed: Double
+    var windDegree: Int
+
+    var clouds: Int
+
     let hourlyForecast: [HourForecast]
     let tenDaysForecast: [DayForecast]
 
@@ -61,6 +70,15 @@ class DetailViewModel {
 
         self.sunset = response.sys.sunset.date
         self.sunrise = response.sys.sunrise.date
+
+        self.humidity = response.main.humidity
+        self.pressure = response.main.pressure
+        self.visibility = response.visibility
+
+        self.windSpeed = response.wind.speed
+        self.windDegree = response.wind.deg
+
+        self.clouds = response.clouds.all
 
         self.hourlyForecast = []
         self.tenDaysForecast = []
