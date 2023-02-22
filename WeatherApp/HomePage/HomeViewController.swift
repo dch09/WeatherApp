@@ -68,31 +68,31 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let bookmarksAvailable = !Storage.shared.isEmpty
-        let resultsAvailable = !viewModel.searchResults.isEmpty
-        let city: String?
+        guard let city = city(at: indexPath) else { return }
+        viewModel.openWeatherDetails(for: city)
+    }
 
-        switch (bookmarksAvailable, resultsAvailable) {
+    private func city(at indexPath: IndexPath) -> String? {
+        let bookmarks = Storage.shared.bookmarks
+        let results = viewModel.searchResults
+
+        switch (!bookmarks.isEmpty, !results.isEmpty) {
         case (true, true):
             switch indexPath.section {
             case 0:
-                city = Storage.shared.bookmarks[safe: indexPath.row]
+                return bookmarks[safe: indexPath.row]
             case 1:
-                city = viewModel.searchResults[safe: indexPath.row]?.localizedName
+                return results[safe: indexPath.row]?.localizedName
             default:
-                city = nil
+                return nil
             }
         case (true, false):
-            city = Storage.shared.bookmarks[safe: indexPath.row]
+            return bookmarks[safe: indexPath.row]
         case (false, true):
-            city = viewModel.searchResults[safe: indexPath.row]?.localizedName
+            return results[safe: indexPath.row]?.localizedName
         case (false, false):
-            city = nil
+            return nil
         }
-
-        guard let city else { return }
-
-        viewModel.openWeatherDetails(for: city)
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
