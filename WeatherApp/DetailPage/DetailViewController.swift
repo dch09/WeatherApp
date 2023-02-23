@@ -10,6 +10,7 @@ import UIKit
 class DetailViewController: UIViewController {
     private let gradientLayer = CAGradientLayer()
 
+    private var country = UILabel()
     private var icon = UILabel()
     private var currentTemp = UILabel()
     private var maxTemp = UILabel()
@@ -24,8 +25,6 @@ class DetailViewController: UIViewController {
     private var windTile = RoundedTileView()
     private var pressureTile = RoundedTileView()
     private var humidityTile = RoundedTileView()
-
-    // TODO: - add country label
 
     private var viewModel: DetailViewModel!
 
@@ -44,7 +43,7 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = viewModel.city
+        title = viewModel.city.name
         navigationController?.navigationBar.tintColor = .black
         setupBookmarkButton()
         setupBackground()
@@ -57,7 +56,7 @@ class DetailViewController: UIViewController {
 
     private func setupBookmarkButton() {
         // TODO: - fix constraints issues
-        let isBookmarked = Storage.shared.isBookmarked(viewModel.city)
+        let isBookmarked = Storage.shared.isBookmarked(viewModel.city.name)
         let iconName = isBookmarked ? "bookmarkIconFill" : "bookmarkIcon"
         let icon = UIImage(named: iconName)
         let button = UIButton()
@@ -81,6 +80,7 @@ class DetailViewController: UIViewController {
     }
 
     private func setupViews() {
+        setupCountry()
         setupIcon()
         setupTemperatures()
         setupSunriseTile()
@@ -90,6 +90,13 @@ class DetailViewController: UIViewController {
         setupWindTile()
         setupPressureTile()
         setupHumidityTile()
+    }
+
+    private func setupCountry() {
+        country.text = viewModel.city.country
+        country.font = .systemFont(ofSize: 18)
+        country.textColor = .black.withAlphaComponent(0.7)
+        view.addSubview(country)
     }
 
     private func setupIcon() {
@@ -121,7 +128,7 @@ class DetailViewController: UIViewController {
     }
 
     private func setupSunriseTile() {
-        let icon = UIImage(named: "sunsetIcon") ?? .init()
+        let icon = UIImage(named: "sunsetIcon")
         sunriseTile.update(with: .init(icon: icon,
                                        title: "Sunrise",
                                        detail: viewModel.sunrise.shortFormat))
@@ -129,7 +136,7 @@ class DetailViewController: UIViewController {
     }
 
     private func setupSunsetTile() {
-        let icon = UIImage(named: "sunriseIcon") ?? .init()
+        let icon = UIImage(named: "sunriseIcon")
         sunsetTile.update(with: .init(icon: icon,
                                       title: "Sunset",
                                       detail: viewModel.sunset.shortFormat))
@@ -137,42 +144,42 @@ class DetailViewController: UIViewController {
     }
 
     func setupVisibilityTile() {
-        let icon = UIImage()
+        let icon = UIImage(named: "eyeIcon")
         visibilityTile.update(with: .init(icon: icon,
                                           title: "Visibility",
-                                          detail: "\(viewModel.visibility)"))
+                                          detail: viewModel.visibility.kilometersString))
         view.addSubview(visibilityTile)
     }
 
     func setupCloudsTile() {
-        let icon = UIImage()
+        let icon = UIImage(named: "cloudIcon")
         cloudsTile.update(with: .init(icon: icon,
-                                      title: "Clouds",
-                                      detail: "\(viewModel.clouds)"))
+                                      title: "Cloudiness",
+                                      detail: "\(viewModel.clouds) %"))
         view.addSubview(cloudsTile)
     }
 
     func setupWindTile() {
-        let icon = UIImage()
+        let icon = UIImage(named: "windIcon")
         windTile.update(with: .init(icon: icon,
                                     title: "Wind Speed",
-                                    detail: "\(viewModel.windSpeed)"))
+                                    detail: "\(viewModel.windSpeed) m/s"))
         view.addSubview(windTile)
     }
 
     func setupPressureTile() {
-        let icon = UIImage()
+        let icon = UIImage(named: "speedometerIcon")
         pressureTile.update(with: .init(icon: icon,
                                         title: "Pressure",
-                                        detail: "\(viewModel.pressure)"))
+                                        detail: "\(viewModel.pressure) hPa"))
         view.addSubview(pressureTile)
     }
 
     func setupHumidityTile() {
-        let icon = UIImage()
+        let icon = UIImage(named: "humidityIcon")
         humidityTile.update(with: .init(icon: icon,
                                         title: "Humidity",
-                                        detail: "\(viewModel.pressure)"))
+                                        detail: "\(viewModel.humidity) %"))
         view.addSubview(humidityTile)
     }
 
@@ -214,10 +221,16 @@ class DetailViewController: UIViewController {
     // MARK: - Layout -
 
     private func layoutViews() {
-        icon.anchor(top: view.safeAreaLayoutGuide.topAnchor,
-                    left: view.safeAreaLayoutGuide.leftAnchor,
-                    right: view.safeAreaLayoutGuide.rightAnchor,
+        country.anchor(top: view.safeAreaLayoutGuide.topAnchor,
+                       left: view.safeAreaLayoutGuide.leftAnchor,
+                       right: view.safeAreaLayoutGuide.rightAnchor,
+                       paddingLeft: 16)
+
+        icon.anchor(top: country.bottomAnchor,
+                    left: country.leftAnchor,
+                    right: country.rightAnchor,
                     paddingTop: 32)
+
         currentTemp.anchor(top: icon.bottomAnchor,
                            left: icon.leftAnchor,
                            right: icon.rightAnchor,

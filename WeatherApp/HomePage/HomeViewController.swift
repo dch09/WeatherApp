@@ -72,7 +72,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         viewModel.openWeatherDetails(for: city)
     }
 
-    private func city(at indexPath: IndexPath) -> String? {
+    private func city(at indexPath: IndexPath) -> CityModel? {
         let bookmarks = Storage.shared.bookmarks
         let results = viewModel.searchResults
 
@@ -82,14 +82,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 return bookmarks[safe: indexPath.row]
             case 1:
-                return results[safe: indexPath.row]?.localizedName
+                guard let result = results[safe: indexPath.row] else { return nil }
+                return CityModel(from: result)
             default:
                 return nil
             }
         case (true, false):
             return bookmarks[safe: indexPath.row]
         case (false, true):
-            return results[safe: indexPath.row]?.localizedName
+            guard let result = results[safe: indexPath.row] else { return nil }
+            return CityModel(from: result)
         case (false, false):
             return nil
         }
@@ -122,11 +124,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let bookmarksCount = Storage.shared.bookmarks.count
+        let bookmarksAvailable = bookmarksCount > 0
+        let resultsCount = viewModel.searchResults.count
+        let resultsAvailable = resultsCount > 0
+
         switch section {
         case 0:
-            return Storage.shared.bookmarks.count
+            return bookmarksAvailable ? bookmarksCount : resultsCount
         case 1:
-            return viewModel.searchResults.count
+            return bookmarksAvailable ? resultsCount : 0
         default:
             return 0
         }
@@ -155,16 +162,25 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResult", for: indexPath)
+        let bookmarksAvailable = !Storage.shared.bookmarks.isEmpty
 
         switch indexPath.section {
         case 0:
-            guard let city = Storage.shared.bookmarks[safe: indexPath.row] else { return cell }
-            let model = CityModel(name: city, country: nil, isBookmarked: true)
-            return configureCell(with: model, cell: cell)
+            if bookmarksAvailable {
+                guard let city = Storage.shared.bookmarks[safe: indexPath.row] else { return cell }
+                return configureCell(with: city, cell: cell)
+            } else {
+                guard let city = viewModel.searchResults[safe: indexPath.row] else { return cell }
+                return configureCell(with: CityModel(from: city), cell: cell)
+            }
         case 1:
-            guard let city = viewModel.searchResults[safe: indexPath.row] else { return cell }
-            let model = CityModel(name: city.localizedName, country: city.country?.localizedName)
-            return configureCell(with: model, cell: cell)
+            if bookmarksAvailable {
+                guard let result = viewModel.searchResults[safe: indexPath.row] else { return cell }
+                let city = CityModel(from: result)
+                return configureCell(with: city, cell: cell)
+            } else {
+                return cell
+            }
         default:
             return cell
         }
@@ -174,7 +190,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 // MARK: - HomeViewController + HomeViewPresentation -
 
 extension HomeViewController: HomeViewPresentation {
-    func openDetailsFor(city: String, with data: CurrentWeatherResponse) {
+    func openDetailsFor(city: CityModel, with data: CurrentWeatherResponse) {
         let viewModel = DetailViewModel(from: data, city: city)
         let detailVC = DetailViewController(viewModel: viewModel)
 

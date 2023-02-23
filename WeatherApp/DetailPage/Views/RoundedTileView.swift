@@ -26,10 +26,19 @@ class RoundedTileView: UIView {
         clipsToBounds = true
         addBlur()
         stackView.axis = .vertical
-        stackView.spacing = 8
+        stackView.spacing = 16
         stackView.addArrangedSubview(headerWrapper)
         stackView.addArrangedSubview(detail)
         icon.contentMode = .scaleAspectFit
+        icon.alpha = 0.6
+        title.font = .systemFont(ofSize: 16, weight: .bold)
+        detail.font = .systemFont(ofSize: 24, weight: .medium)
+        detail.textColor = .black.withAlphaComponent(0.8)
+        if #available(iOS 13.0, *) {
+            title.textColor = .secondaryLabel
+        } else {
+            title.textColor = .black.withAlphaComponent(0.6)
+        }
         headerWrapper.addSubview(icon)
         headerWrapper.addSubview(title)
 
@@ -42,8 +51,8 @@ class RoundedTileView: UIView {
         icon.anchor(top: headerWrapper.topAnchor,
                     left: headerWrapper.leftAnchor,
                     bottom: headerWrapper.bottomAnchor,
-                    width: 24,
-                    height: 24)
+                    width: 16,
+                    height: 16)
         title.anchor(top: icon.topAnchor,
                      left: icon.rightAnchor,
                      bottom: icon.bottomAnchor,
@@ -68,7 +77,7 @@ class RoundedTileView: UIView {
 
 extension RoundedTileView {
     struct Configuration {
-        let icon: UIImage
+        let icon: UIImage?
         let title: String
         let detail: String
     }

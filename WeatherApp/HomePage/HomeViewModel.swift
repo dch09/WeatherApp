@@ -11,7 +11,7 @@ import UIKit
 protocol HomeViewPresentation: AnyObject {
     func showValidationMessage(_ message: String)
     func hideValidationMessage()
-    func openDetailsFor(city: String, with data: CurrentWeatherResponse)
+    func openDetailsFor(city: CityModel, with data: CurrentWeatherResponse)
     func reloadData()
 }
 
@@ -61,8 +61,8 @@ class HomeViewModel {
         searchResults = searchResults.filter { !Storage.shared.isBookmarked($0.localizedName) }
     }
     
-    func openWeatherDetails(for city: String) {
-        NetworkingClient.shared.getCoordinates(for: city) { [weak self] result in
+    func openWeatherDetails(for city: CityModel) {
+        NetworkingClient.shared.getCoordinates(for: city.name) { [weak self] result in
             switch result {
             case .success(let value):
                 guard let first = value.first,

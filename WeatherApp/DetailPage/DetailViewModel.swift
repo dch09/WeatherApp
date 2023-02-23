@@ -27,7 +27,7 @@ struct DayForecast {
 }
 
 class DetailViewModel {
-    let city: String
+    let city: CityModel
 
     let currentTemp: Temperature
 
@@ -59,7 +59,7 @@ class DetailViewModel {
     let hourlyForecast: [HourForecast]
     let tenDaysForecast: [DayForecast]
 
-    init(from response: CurrentWeatherResponse, city: String) {
+    init(from response: CurrentWeatherResponse, city: CityModel) {
         self.city = city
 
         self.currentTemp = response.main.temp

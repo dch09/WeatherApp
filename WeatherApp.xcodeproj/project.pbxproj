@@ -38,6 +38,8 @@
 		519949B629A2A3AB005D4012 /* UIView+Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519949B529A2A3AB005D4012 /* UIView+Debug.swift */; };
 		519949BA29A2A84A005D4012 /* UIEdgeInsets+Standard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519949B929A2A84A005D4012 /* UIEdgeInsets+Standard.swift */; };
 		519949BC29A2AB54005D4012 /* UIView+Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519949BB29A2AB54005D4012 /* UIView+Blur.swift */; };
+		51A5098129A6C37B00F346EC /* Int+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A5098029A6C37B00F346EC /* Int+Formatting.swift */; };
+		51A5098329A6C80D00F346EC /* CityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A5098229A6C80D00F346EC /* CityModel.swift */; };
 		51B07A2529A691AC006A2AA8 /* Collection+Safe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B07A2429A691AC006A2AA8 /* Collection+Safe.swift */; };
 		51B07A2729A69C2E006A2AA8 /* RoundedTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B07A2629A69C2E006A2AA8 /* RoundedTileView.swift */; };
 		51B07A2929A69D6F006A2AA8 /* Date+ShortFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51B07A2829A69D6F006A2AA8 /* Date+ShortFormat.swift */; };
@@ -96,6 +98,8 @@
 		519949B529A2A3AB005D4012 /* UIView+Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Debug.swift"; sourceTree = "<group>"; };
 		519949B929A2A84A005D4012 /* UIEdgeInsets+Standard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIEdgeInsets+Standard.swift"; sourceTree = "<group>"; };
 		519949BB29A2AB54005D4012 /* UIView+Blur.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Blur.swift"; sourceTree = "<group>"; };
+		51A5098029A6C37B00F346EC /* Int+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Formatting.swift"; sourceTree = "<group>"; };
+		51A5098229A6C80D00F346EC /* CityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityModel.swift; sourceTree = "<group>"; };
 		51B07A2429A691AC006A2AA8 /* Collection+Safe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Safe.swift"; sourceTree = "<group>"; };
 		51B07A2629A69C2E006A2AA8 /* RoundedTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTileView.swift; sourceTree = "<group>"; };
 		51B07A2829A69D6F006A2AA8 /* Date+ShortFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+ShortFormat.swift"; sourceTree = "<group>"; };
@@ -209,6 +213,7 @@
 			children = (
 				511C3C9329A135310064D750 /* UIView+Anchor.swift */,
 				51B07A2829A69D6F006A2AA8 /* Date+ShortFormat.swift */,
+				51A5098029A6C37B00F346EC /* Int+Formatting.swift */,
 				51B07A2429A691AC006A2AA8 /* Collection+Safe.swift */,
 				51DF24A529A556CA0004B4E8 /* UIView+Resized.swift */,
 				510BC7FB29A40963008AA20A /* UIView+Fade.swift */,
@@ -303,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				519949AC29A291E6005D4012 /* WeatherType.swift */,
+				51A5098229A6C80D00F346EC /* CityModel.swift */,
 				519949AE29A29AF7005D4012 /* Temperature.swift */,
 			);
 			path = Model;
@@ -486,6 +492,7 @@
 				511C3C9929A13B730064D750 /* HomeNavigation.swift in Sources */,
 				510BC7F929A407BF008AA20A /* TextFieldContainer.swift in Sources */,
 				510BC7FC29A40963008AA20A /* UIView+Fade.swift in Sources */,
+				51A5098129A6C37B00F346EC /* Int+Formatting.swift in Sources */,
 				511C3C9729A13B6D0064D750 /* HomeViewModel.swift in Sources */,
 				519949BA29A2A84A005D4012 /* UIEdgeInsets+Standard.swift in Sources */,
 				5199499829A277BF005D4012 /* DetailViewController.swift in Sources */,
@@ -495,6 +502,7 @@
 				519949B629A2A3AB005D4012 /* UIView+Debug.swift in Sources */,
 				511C3CA829A13FDB0064D750 /* AutocompleteResponse.swift in Sources */,
 				51DF24A629A556CA0004B4E8 /* UIView+Resized.swift in Sources */,
+				51A5098329A6C80D00F346EC /* CityModel.swift in Sources */,
 				5199499A29A2782A005D4012 /* DetailViewModel.swift in Sources */,
 				511C3C5D29A1313A0064D750 /* AppDelegate.swift in Sources */,
 				51B07A2929A69D6F006A2AA8 /* Date+ShortFormat.swift in Sources */,
