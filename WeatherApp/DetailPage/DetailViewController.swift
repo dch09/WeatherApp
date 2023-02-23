@@ -54,21 +54,21 @@ class DetailViewController: UIViewController {
 
     // MARK: - Setup -
 
+    // TODO: - fix constraint errors
     private func setupBookmarkButton() {
-        // TODO: - fix constraints issues
         let isBookmarked = Storage.shared.isBookmarked(viewModel.city.name)
         let iconName = isBookmarked ? "bookmarkIconFill" : "bookmarkIcon"
         let icon = UIImage(named: iconName)
         let button = UIButton()
-        button.setImage(icon, for: .normal)
-        button.addTarget(self,
-                         action: #selector(toggleCityBookmark),
-                         for: .touchUpInside)
-        button.anchor(width: 24, height: 24)
-        button.imageView?.contentMode = .scaleAspectFit
-
         let barButton = UIBarButtonItem(customView: button)
         navigationItem.rightBarButtonItem = barButton
+
+        button.setImage(icon, for: .normal)
+        button.addTarget(self, action: #selector(toggleCityBookmark), for: .touchUpInside)
+        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.imageView?.contentMode = .scaleAspectFit
     }
 
     @objc func toggleCityBookmark(_ sender: UIBarButtonItem) {
@@ -112,6 +112,15 @@ class DetailViewController: UIViewController {
         currentTemp.textColor = .darkText
         currentTemp.textAlignment = .center
         currentTemp.text = viewModel.currentTemp.degreeFormat
+
+        switch viewModel.currentTemp {
+        case ..<10:
+            currentTemp.textColor = .blue.withAlphaComponent(0.4)
+        case 10 ..< 20:
+            currentTemp.textColor = .black.withAlphaComponent(0.4)
+        default:
+            currentTemp.textColor = .red.withAlphaComponent(0.4)
+        }
         view.addSubview(currentTemp)
 
         minTemp.text = viewModel.lowestTemperatureLabel

@@ -24,7 +24,7 @@ struct Storage {
             addBookmark(for: city)
         }
     }
-    
+
     func isBookmarked(_ name: String) -> Bool {
         bookmarks.contains(where: { $0.name == name })
     }

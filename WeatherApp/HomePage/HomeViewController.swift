@@ -30,8 +30,6 @@ class HomeViewController: UIViewController {
         if #available(iOS 15.0, *) {
             resultList.sectionHeaderTopPadding = 0
         }
-
-        print(Storage.shared.bookmarks.count)
     }
 
     override func viewWillAppear(_ animated: Bool) {
