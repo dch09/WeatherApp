@@ -5,4 +5,4 @@ Weather app demo using OpenWeatherAPI &amp; AccuWeatherAPI
 - [ ] Fix constraints errors for UIBarButtonItem in DetailViewController
 - [ ] Pass app localization to API calls
 - [ ] Animations, UI fixes
-- [ ] Wrap DetailViewController with UIScrollView
+- [ ] Wrap DetailViewController in UIScrollView
